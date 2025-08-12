@@ -379,6 +379,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 738b0ba1-7629-4c00-8f3b-bce3d219789a
     m_ActionName: 'Player/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 41026691}
+        m_TargetAssemblyTypeName: FPController, Assembly-CSharp
+        m_MethodName: Oncrouch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0ae4e047-1a40-4812-8ac4-fc86b0324930
+    m_ActionName: 'Player/Crouch[/Keyboard/ctrl]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -520,6 +536,9 @@ MonoBehaviour:
   cameraTransform: {fileID: 330585546}
   lookSensitivity: 2
   verticalLookLimit: 90
+  crouchHeight: 1
+  standHeight: 2
+  crouchSpeed: 2.5
 --- !u!1 &87544370
 GameObject:
   m_ObjectHideFlags: 0

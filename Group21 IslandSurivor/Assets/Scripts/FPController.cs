@@ -14,6 +14,11 @@ public class FPController : MonoBehaviour
     public float lookSensitivity = 2f;
     public float verticalLookLimit = 90f;
 
+    [Header("Crouch Settings")]
+    public float crouchHeight = 1f;
+    public float standHeight = 2f;
+    public float crouchSpeed = 2.5f;
+    private float originalMoveSpeed;
 
     private CharacterController controller;
     private Vector2 moveInput;
@@ -73,6 +78,20 @@ public class FPController : MonoBehaviour
 
         cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    public void Oncrouch(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            controller.height = crouchHeight;
+            moveSpeed = crouchSpeed;
+        }
+        else if (context.canceled)
+        {
+            controller.height = standHeight;
+            moveSpeed = originalMoveSpeed;
+        }
     }
 
   
