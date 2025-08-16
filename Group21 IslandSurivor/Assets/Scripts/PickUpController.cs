@@ -80,7 +80,7 @@ public class PickupController : MonoBehaviour
             }
         }
 
-        // Fallback: Check for pickups in a sphere around the camera
+        
         if (closestPickupable == null)
         {
             Collider[] nearbyColliders = Physics.OverlapSphere(playerCamera.transform.position, pickupRange, pickupLayer);
@@ -94,7 +94,7 @@ public class PickupController : MonoBehaviour
                     Vector3 directionToObject = (col.transform.position - playerCamera.transform.position).normalized;
                     float dotProduct = Vector3.Dot(playerCamera.transform.forward, directionToObject);
 
-                    if (dotProduct > 0.3f) // Object is roughly in front (adjust threshold as needed)
+                    if (dotProduct > 0.3f) // Object is roughly in front of my player (adjust threshold as needed)
                     {
                         float distance = Vector3.Distance(playerCamera.transform.position, col.transform.position);
                         if (distance < closestDistance)
@@ -150,7 +150,7 @@ public class PickupController : MonoBehaviour
     {
         if (currentHeldObject != null)
         {
-            Vector3 throwForce = playerCamera.transform.forward * 10f; // Adjust force as needed
+            Vector3 throwForce = playerCamera.transform.forward * 10f; 
             currentHeldObject.Throw(throwForce);
             currentHeldObject = null;
         }
@@ -165,7 +165,7 @@ public class PickupController : MonoBehaviour
         }
     }
 
-    // Gizmos for debugging
+    
     void OnDrawGizmosSelected()
     {
         if (playerCamera != null)
