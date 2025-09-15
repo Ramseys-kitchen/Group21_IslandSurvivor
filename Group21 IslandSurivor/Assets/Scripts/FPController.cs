@@ -25,6 +25,9 @@ public class FPController : MonoBehaviour
     public Transform holdPoint;
     private PickupObject heldObject;
 
+    [Header("Sleep Settings")]
+    public float sleepRange = 2f;
+
     private CharacterController controller;
     private Vector2 moveInput;
     private Vector2 lookInput;
@@ -63,6 +66,23 @@ public class FPController : MonoBehaviour
         if(context.performed && controller.isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
+    public void OnSleep(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+
+        // Find nearby beds and try to sleep
+        BedSleepSystem[] beds = FindObjectsOfType<BedSleepSystem>();
+        foreach (BedSleepSystem bed in beds)
+        {
+            float distance = Vector3.Distance(transform.position, bed.transform.position);
+            if (distance <= sleepRange)
+            {
+                bed.TrySleep();
+                break; // Only interact with the first bed found
+            }
         }
     }
 
