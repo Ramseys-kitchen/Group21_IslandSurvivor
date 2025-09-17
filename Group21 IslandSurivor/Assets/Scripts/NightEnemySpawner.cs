@@ -21,11 +21,15 @@ public class NightEnemySpawner : MonoBehaviour
     public LayerMask groundLayer = 1;
     public float groundCheckDistance = 10f;
 
+    [Header("Combat Integration")]
+    public GameObject healthBarPrefab; // Assign your enemy health bar prefab here
+
     private DayNightCycle dayNightCycle;
     private bool wasNight = false;
     private float spawnTimer = 0f;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
     private int enemiesSpawnedThisNight = 0;
+    private int enemiesKilledThisNight = 0;
 
     void Start()
     {
@@ -66,11 +70,12 @@ public class NightEnemySpawner : MonoBehaviour
         Debug.Log("Night started - enemies will spawn!");
         spawnTimer = 0f;
         enemiesSpawnedThisNight = 0;
+        enemiesKilledThisNight = 0;
     }
 
     void OnDayStart()
     {
-        Debug.Log("Day started - enemies despawning!");
+        Debug.Log($"Day started! Enemies killed this night: {enemiesKilledThisNight}");
         if (despawnAtDawn)
             DespawnAllEnemies();
     }
@@ -96,11 +101,25 @@ public class NightEnemySpawner : MonoBehaviour
             GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
             GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
+            // Setup enemy with health bar
+            SimpleEnemy enemyScript = enemy.GetComponent<SimpleEnemy>();
+            if (enemyScript != null && healthBarPrefab != null)
+            {
+                enemyScript.healthBarPrefab = healthBarPrefab;
+            }
+
             spawnedEnemies.Add(enemy);
             enemiesSpawnedThisNight++;
 
             Debug.Log($"Spawned enemy! Total: {enemiesSpawnedThisNight}/{maxEnemiesPerNight}");
         }
+    }
+
+    public void OnEnemyDied(GameObject enemy)
+    {
+        spawnedEnemies.Remove(enemy);
+        enemiesKilledThisNight++;
+        Debug.Log($"Enemy killed! Total killed this night: {enemiesKilledThisNight}");
     }
 
     bool FindValidSpawnPosition(out Vector3 spawnPosition)
