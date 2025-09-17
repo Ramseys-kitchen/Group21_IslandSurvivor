@@ -1091,11 +1091,7 @@ MonoBehaviour:
   targetCrosshairColor: {r: 1, g: 0, b: 0, a: 1}
   hitEffect: {fileID: 0}
   bulletPrefab: {fileID: 9037094631708467495, guid: 5311535a4ae56e84f8a38de4439932f8, type: 3}
-  bulletSpawnPoint: {fileID: 0}
-  bulletSpeed: 30
-  bulletLifetime: 2
-  showDebugBullets: 1
-  debugBulletColor: {r: 1, g: 0, b: 0, a: 1}
+  bulletSpeed: 50
 --- !u!1 &68983549
 GameObject:
   m_ObjectHideFlags: 0
