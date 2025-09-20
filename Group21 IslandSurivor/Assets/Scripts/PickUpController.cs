@@ -17,7 +17,7 @@ public class PickupController : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private KeyCode pickupKey = KeyCode.E;
-    [SerializeField] private KeyCode throwKey = KeyCode.Q;
+    [SerializeField] private KeyCode throwKey = KeyCode.G;
 
     private PickupObject currentHeldObject;
     private PickupObject currentTargetObject;

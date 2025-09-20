@@ -25,6 +25,13 @@ public class FPController : MonoBehaviour
     public Transform holdPoint;
     private PickupObject heldObject;
 
+    [Header("Combat Settings")]
+    public float attackDamage = 50f;
+    public float attackRange = 3f;
+    public float attackCooldown = 1f;
+
+    private float lastAttackTime;
+
     [Header("Sleep Settings")]
     public float sleepRange = 2f;
 
@@ -148,4 +155,32 @@ public class FPController : MonoBehaviour
         }
     }
 
+    public void OnCombat(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            PerformAttack();
+            lastAttackTime = Time.time;
+        }
+    }
+
+    private void PerformAttack()
+    {
+        // Simple raycast attack
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, attackRange))
+        {
+            SimpleEnemy enemy = hit.collider.GetComponent<SimpleEnemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(attackDamage);
+            }
+        }
+    }
 }
+
+
