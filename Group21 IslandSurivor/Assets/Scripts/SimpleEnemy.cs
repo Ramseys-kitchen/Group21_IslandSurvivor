@@ -70,7 +70,7 @@ public class SimpleEnemy : MonoBehaviour
         if (enemyRenderer != null)
             originalColor = enemyRenderer.material.color;
 
-        // Create health bar
+
         CreateHealthBar();
 
         // Initialize attack indicator
@@ -82,7 +82,7 @@ public class SimpleEnemy : MonoBehaviour
     {
         if (healthBarPrefab != null)
         {
-            // Find existing canvas
+            // Find existing canvas on my project
             Canvas existingCanvas = FindObjectOfType<Canvas>();
 
             if (existingCanvas != null)
@@ -415,7 +415,7 @@ public class SimpleEnemy : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawRay(transform.position + Vector3.up * 0.5f, Vector3.down * groundCheckDistance);
 
-        // Draw attack range indicator
+        
         if (isAttacking)
         {
             Gizmos.color = Color.magenta;

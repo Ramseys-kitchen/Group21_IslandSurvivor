@@ -117,7 +117,7 @@ public class DayNightCycle : MonoBehaviour
 
         dayEventsTriggered[day] = true;
 
-        // Trigger specific day events
+        // I will trigger the events down here
         switch (day)
         {
             case 1:
@@ -139,7 +139,7 @@ public class DayNightCycle : MonoBehaviour
                 break;
 
             case 4:
-                // Day 4 events (final day)
+                // Day 4 events 
                 if (showDebugInfo)
                     Debug.Log("Day 4: Final day events!");
                 break;

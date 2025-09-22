@@ -63,7 +63,7 @@ public class WaterPond : MonoBehaviour
         }
     }
 
-    // Visual helper in editor
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;

@@ -24,7 +24,7 @@ public class PickupController : MonoBehaviour
 
     void Start()
     {
-        // Create hold point if not assigned
+
         if (holdPoint == null)
         {
             GameObject holdPointGO = new GameObject("HoldPoint");
@@ -90,11 +90,11 @@ public class PickupController : MonoBehaviour
                 PickupObject pickup = col.GetComponent<PickupObject>();
                 if (pickup != null && pickup.CanBePickedUp)
                 {
-                    // Check if it's roughly in front of the player
+                    // Check if object is roughly in front of the player
                     Vector3 directionToObject = (col.transform.position - playerCamera.transform.position).normalized;
                     float dotProduct = Vector3.Dot(playerCamera.transform.forward, directionToObject);
 
-                    if (dotProduct > 0.3f) // Object is roughly in front of my player (adjust threshold as needed)
+                    if (dotProduct > 0.3f) // This will help me check object is roughly in front of my player 
                     {
                         float distance = Vector3.Distance(playerCamera.transform.position, col.transform.position);
                         if (distance < closestDistance)

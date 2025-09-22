@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
     public Text healthText;
 
     [Header("Game Over")]
-    public GameObject gameOverPanel; // Assign a UI panel for game over
+    public GameObject gameOverPanel; // I will assign a UI panel for game over
 
     void Start()
     {
@@ -92,6 +92,6 @@ public class PlayerHealth : MonoBehaviour
     public void RestartGame()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-        Time.timeScale = 1f; // Ensure time is running
+        Time.timeScale = 1f; 
     }
 }
