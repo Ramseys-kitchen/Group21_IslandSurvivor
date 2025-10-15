@@ -7,26 +7,26 @@ public class DayEvent : UnityEvent<int> { }
 public class DayNightCycle : MonoBehaviour
 {
     [Header("Skybox Materials")]
-    public Material daySkybox;  
+    public Material daySkybox;
     public Material afternoonSkybox;
-    public Material nightSkybox; 
+    public Material nightSkybox;
 
     [Header("Lighting")]
-    public Light sunLight; 
-    public Gradient dayColor; 
+    public Light sunLight;
+    public Gradient dayColor;
     public Gradient afternoonColor;
-    public Gradient nightColor; 
+    public Gradient nightColor;
 
     [Header("Timing")]
     public float cycleDuration = 120f; // 2 minutes in seconds
     public int maxDays = 4;
 
     [Header("Sun Rotation")]
-    public Transform sunTransform; 
+    public Transform sunTransform;
 
     [Header("Day Events")]
-    public DayEvent OnDayStart; 
-    public DayEvent OnSpecificDay; 
+    public DayEvent OnDayStart;
+    public DayEvent OnSpecificDay;
 
     [Header("Debug")]
     public bool showDebugInfo = true;
@@ -37,7 +37,7 @@ public class DayNightCycle : MonoBehaviour
     private bool[] dayEventsTriggered;
     private bool gameEnded = false;
 
-  
+
     public int CurrentDay => currentDay;
     public bool IsGameEnded => gameEnded;
     public float TimeUntilNextDay => cycleDuration - (currentTime % cycleDuration);
@@ -45,17 +45,17 @@ public class DayNightCycle : MonoBehaviour
 
     void Start()
     {
-        
-        dayEventsTriggered = new bool[maxDays + 1]; 
 
-        
+        dayEventsTriggered = new bool[maxDays + 1];
+
+
         if (daySkybox != null)
             RenderSettings.skybox = daySkybox;
 
-        
+
         SetupDefaultGradients();
 
-        
+
         OnDayStart?.Invoke(currentDay);
         TriggerDaySpecificEvents(currentDay);
 
@@ -67,10 +67,10 @@ public class DayNightCycle : MonoBehaviour
     {
         if (gameEnded) return;
 
-        
+
         currentTime += Time.deltaTime;
 
-        
+
         int newDay = Mathf.FloorToInt(currentTime / cycleDuration) + 1;
 
         if (newDay != currentDay && newDay <= maxDays)
@@ -88,13 +88,13 @@ public class DayNightCycle : MonoBehaviour
             return;
         }
 
-        
+
         float cycleProgress = (currentTime % cycleDuration) / cycleDuration;
 
-        
+
         bool shouldBeDay = cycleProgress < 0.5f;
 
-        
+
         if (shouldBeDay != isDay)
         {
             isDay = shouldBeDay;
@@ -104,10 +104,10 @@ public class DayNightCycle : MonoBehaviour
                 Debug.Log($"Day {currentDay}: {(isDay ? "Day" : "Night")} time");
         }
 
-        
+
         UpdateLighting(cycleProgress);
 
-        
+
         RotateSun(cycleProgress);
     }
 
@@ -145,7 +145,7 @@ public class DayNightCycle : MonoBehaviour
                 break;
         }
 
-        
+
         OnSpecificDay?.Invoke(day);
     }
 
@@ -156,8 +156,8 @@ public class DayNightCycle : MonoBehaviour
         if (showDebugInfo)
             Debug.Log("Game completed! All 4 days have passed.");
 
-       
-        
+
+
     }
 
     void SwitchSkybox()
@@ -171,7 +171,7 @@ public class DayNightCycle : MonoBehaviour
             RenderSettings.skybox = nightSkybox;
         }
 
-        
+
         DynamicGI.UpdateEnvironment();
     }
 
@@ -179,19 +179,19 @@ public class DayNightCycle : MonoBehaviour
     {
         if (sunLight == null) return;
 
-        
+
         float lightIntensity;
         Color lightColor;
 
-        if (cycleProgress < 0.5f) 
+        if (cycleProgress < 0.5f)
         {
-            float dayProgress = cycleProgress * 2f; 
+            float dayProgress = cycleProgress * 2f;
             lightIntensity = Mathf.Lerp(0.3f, 1.2f, Mathf.Sin(dayProgress * Mathf.PI));
             lightColor = dayColor.Evaluate(dayProgress);
         }
-        else 
+        else
         {
-            float nightProgress = (cycleProgress - 0.5f) * 2f; 
+            float nightProgress = (cycleProgress - 0.5f) * 2f;
             lightIntensity = Mathf.Lerp(0.1f, 0.3f, Mathf.Sin(nightProgress * Mathf.PI));
             lightColor = nightColor.Evaluate(nightProgress);
         }
@@ -204,8 +204,8 @@ public class DayNightCycle : MonoBehaviour
     {
         if (sunTransform == null) return;
 
-        
-        float sunAngle = cycleProgress * 180f - 90f; 
+
+        float sunAngle = cycleProgress * 180f - 90f;
         sunTransform.rotation = Quaternion.Euler(sunAngle, 30f, 0f);
     }
 
@@ -213,7 +213,7 @@ public class DayNightCycle : MonoBehaviour
     {
         if (dayColor.colorKeys.Length == 0)
         {
-            
+
             GradientColorKey[] dayColors = new GradientColorKey[3];
             dayColors[0] = new GradientColorKey(new Color(1f, 0.6f, 0.2f), 0f); // Sunrise
             dayColors[1] = new GradientColorKey(Color.white, 0.5f); // Noon
@@ -228,7 +228,7 @@ public class DayNightCycle : MonoBehaviour
 
         if (nightColor.colorKeys.Length == 0)
         {
-            
+
             GradientColorKey[] nightColors = new GradientColorKey[2];
             nightColors[0] = new GradientColorKey(new Color(0.1f, 0.1f, 0.3f), 0f);
             nightColors[1] = new GradientColorKey(new Color(0.05f, 0.05f, 0.2f), 1f);
@@ -241,9 +241,9 @@ public class DayNightCycle : MonoBehaviour
         }
     }
 
-    
 
-    
+
+
     public void SetDay(int day)
     {
         if (day < 1 || day > maxDays) return;
@@ -257,7 +257,7 @@ public class DayNightCycle : MonoBehaviour
         }
     }
 
-    
+
     public void SkipToNextDay()
     {
         if (currentDay >= maxDays) return;
@@ -265,7 +265,7 @@ public class DayNightCycle : MonoBehaviour
         currentTime = currentDay * cycleDuration;
     }
 
-    
+
     public string GetTimeOfDayString()
     {
         float progress = (currentTime % cycleDuration) / cycleDuration;
@@ -279,32 +279,32 @@ public class DayNightCycle : MonoBehaviour
             return "Night";
     }
 
-    
+
     public bool HasDayEventTriggered(int day)
     {
         if (day < 1 || day > maxDays) return false;
         return dayEventsTriggered[day];
     }
 
-    
+
     public void SetTimeOfDay(float normalizedTime)
     {
         currentTime = (currentDay - 1) * cycleDuration + normalizedTime * cycleDuration;
     }
 
-    
+
     public float GetNormalizedTime()
     {
         return (currentTime % cycleDuration) / cycleDuration;
     }
 
-    
+
     public bool IsNight()
     {
         return GetNormalizedTime() >= 0.5f;
     }
 
-    
+
     public float GetTimeRemainingInDay()
     {
         return cycleDuration - (currentTime % cycleDuration);
