@@ -19,6 +19,13 @@ public class CrypticGuide : MonoBehaviour
     public float hoverSpeed = 1f;
     public Color glowColor = new Color(0.5f, 0.8f, 1f);
 
+    [Header("Audio")]
+    public AudioClip[] dialogueSounds; // Array for different voice lines (optional)
+    public AudioClip interactionSound; // Single sound that plays on interact
+    public AudioClip ambientHumSound; // Mystical hum when player is near
+    public AudioSource audioSource;
+    public AudioSource ambientAudioSource; // Separate source for ambient loop
+
     private Transform player;
     private bool playerInRange = false;
     private Vector3 startPos;
@@ -29,29 +36,29 @@ public class CrypticGuide : MonoBehaviour
     // Cryptic advice that hints at the real world metaphor
     private string[] crypticAdvice = new string[]
     {
-        "To survive, you must rest... but rest only comes when you're truly exhausted. Just like deadlines that never let you sleep...",
+        "Rest comes only after exhaustion. Strange how the body knows when to stop... unlike the mind, which never learned that lesson.",
 
-        "The water here is scarce, precious. In another world, it flows freely from metal mouths. You never appreciated those fountains, did you?",
+        "Water here must be earned, searched for, valued. Back there, it poured endlessly from silver mouths you passed without seeing.",
 
-        "The darkness brings monsters. Or perhaps... the monsters were always there, wearing the faces of expectations and grades.",
+        "Night brings dangers that weren't here in daylight. Or were they always present, just wearing different masks?",
 
-        "You seek an escape from this island. But what if this island IS the escape? What were you running from?",
+        "You want to leave this place. But leaving requires knowing what you're returning to. Can you remember clearly?",
 
-        "A shelter, some food, stay warm. Funny how survival is so simple here. No essays. No exams. No disappointment.",
+        "Shelter. Water. Warmth. The basics demand nothing but your attention. No performance. No approval. Just existence.",
 
-        "The trees don't judge you. The water doesn't give you grades. Have you noticed how peaceful it is when nothing expects anything from you?",
+        "The forest doesn't measure you. The rain doesn't score your worth. Have you felt this kind of silence before?",
 
-        "You're confused, lost, unsure of the way forward. Tell me... is this feeling new to you? Or just more honest?",
+        "You wander without knowing the path forward. This uncertainty... does it feel foreign, or just more visible?",
 
-        "Every morning the sun rises without asking if you've earned it. Every night you're still alive. That's enough here. Was it ever enough there?",
+        "The sun doesn't ask what you accomplished yesterday. You're still here. Still breathing. Is that not its own answer?",
 
-        "The enemies only come at night. Your real enemies... they came at all hours, didn't they? In reminders, notifications, dreams.",
+        "Threats emerge only in darkness here. The ones you knew... they had no schedule, no mercy, no off switch.",
 
-        "You think you're trapped here. But you built this place in your mind. This island, this isolation... it's your sanctuary from the storm.",
+        "You call this imprisonment. Yet you built these walls yourself, didn't you? Sometimes we create exactly what we need.",
 
-        "To leave, you must first understand why you arrived. You wished for this. For simplicity. For survival to mean something tangible.",
+        "To escape, first ask: what did you escape to? This wasn't random. Some part of you chose simplicity.",
 
-        "Is this a prison or a privilege? Is your real life a privilege or a prison? The confused cannot tell the difference."
+        "A cage with open doors. A freedom that feels like chains. The lost can't always name what they've found."
     };
 
     void Start()
@@ -63,6 +70,22 @@ public class CrypticGuide : MonoBehaviour
         sphereMaterial = GetComponent<Renderer>().material;
         sphereMaterial.EnableKeyword("_EMISSION");
         sphereMaterial.SetColor("_EmissionColor", glowColor);
+
+        // Setup audio sources
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        // Setup ambient audio source for looping hum
+        if (ambientAudioSource == null && ambientHumSound != null)
+        {
+            ambientAudioSource = gameObject.AddComponent<AudioSource>();
+            ambientAudioSource.clip = ambientHumSound;
+            ambientAudioSource.loop = true;
+            ambientAudioSource.volume = 0f; // Start silent
+            ambientAudioSource.Play();
+        }
 
         // Hide dialogue initially
         if (dialoguePanel != null)
@@ -81,6 +104,13 @@ public class CrypticGuide : MonoBehaviour
         // Check player distance
         float distance = Vector3.Distance(player.position, transform.position);
         playerInRange = distance <= interactionRange;
+
+        // Fade ambient hum based on distance
+        if (ambientAudioSource != null && ambientHumSound != null)
+        {
+            float targetVolume = playerInRange ? 0.3f : 0f;
+            ambientAudioSource.volume = Mathf.Lerp(ambientAudioSource.volume, targetVolume, Time.deltaTime * 2f);
+        }
 
         // Show/hide interaction prompt
         if (promptText != null)
@@ -115,6 +145,24 @@ public class CrypticGuide : MonoBehaviour
 
         // Cycle through advice
         dialogueText.text = crypticAdvice[dialogueIndex];
+
+        // Play audio
+        if (audioSource != null)
+        {
+            // Option 1: Use different sound for each dialogue line (if you have multiple)
+            if (dialogueSounds != null && dialogueSounds.Length > 0)
+            {
+                // Play corresponding sound or random sound
+                AudioClip soundToPlay = dialogueSounds[dialogueIndex % dialogueSounds.Length];
+                audioSource.PlayOneShot(soundToPlay);
+            }
+            // Option 2: Use single interaction sound
+            else if (interactionSound != null)
+            {
+                audioSource.PlayOneShot(interactionSound);
+            }
+        }
+
         dialogueIndex = (dialogueIndex + 1) % crypticAdvice.Length;
 
         // Optional: Pause game or slow time during dialogue

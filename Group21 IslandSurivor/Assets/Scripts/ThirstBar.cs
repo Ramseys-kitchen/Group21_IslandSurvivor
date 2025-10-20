@@ -14,21 +14,29 @@ public class ThirstBar : MonoBehaviour
     public GameObject warningPrompt; // "You're getting thirsty!" text
 
     [Header("Warning Settings")]
-    public float warningThreshold = 25f; // Show warning when thirst drops below this
+    public float warningThreshold = 25f; // Show warning here when my player thirst drops below this
+
+    [Header("Audio")]
+    public AudioClip drinkingSound; // Add my drinking water audio
+    public AudioSource audioSource;
 
     void Start()
     {
-        
         if (thirstSlider != null)
         {
             thirstSlider.maxValue = maxThirst;
             thirstSlider.value = currentThirst;
         }
 
-        
         if (warningPrompt != null)
         {
             warningPrompt.SetActive(false);
+        }
+
+        // Setup audio source
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
@@ -40,10 +48,7 @@ public class ThirstBar : MonoBehaviour
 
     void UpdateThirst()
     {
-        
         currentThirst -= thirstLossRate * Time.deltaTime;
-
-        
         currentThirst = Mathf.Clamp(currentThirst, 0f, maxThirst);
     }
 
@@ -54,7 +59,6 @@ public class ThirstBar : MonoBehaviour
             thirstSlider.value = currentThirst;
         }
 
-        
         if (warningPrompt != null)
         {
             if (currentThirst <= warningThreshold)
@@ -68,11 +72,17 @@ public class ThirstBar : MonoBehaviour
         }
     }
 
-   
     public void DrinkWater()
     {
         currentThirst += waterRestoreAmount;
         currentThirst = Mathf.Clamp(currentThirst, 0f, maxThirst);
+
+        // Play drinking sound
+        if (drinkingSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(drinkingSound);
+        }
+
         Debug.Log("Thirst restored!");
     }
 }
