@@ -28,6 +28,9 @@ public class DayNightCycle : MonoBehaviour
     public DayEvent OnDayStart;
     public DayEvent OnSpecificDay;
 
+    [Header("Rain Effect")]
+    public ParticleSystem rainParticles;
+
     [Header("Debug")]
     public bool showDebugInfo = true;
 
@@ -55,6 +58,11 @@ public class DayNightCycle : MonoBehaviour
 
         SetupDefaultGradients();
 
+        // Stop rain at the start
+        if (rainParticles != null)
+        {
+            rainParticles.Stop();
+        }
 
         OnDayStart?.Invoke(currentDay);
         TriggerDaySpecificEvents(currentDay);
@@ -117,7 +125,7 @@ public class DayNightCycle : MonoBehaviour
 
         dayEventsTriggered[day] = true;
 
-        // I will trigger the events down here
+        // Trigger events based on the day
         switch (day)
         {
             case 1:
@@ -127,13 +135,25 @@ public class DayNightCycle : MonoBehaviour
                 break;
 
             case 2:
-                // Day 2 events (e.g., rain)
-                if (showDebugInfo)
-                    Debug.Log("Day 2: Rain event triggered!");
+                // Day 2 events (rain)
+                if (rainParticles != null)
+                {
+                    rainParticles.Play();
+                    if (showDebugInfo)
+                        Debug.Log("Day 2: Rain started!");
+                }
+                else
+                {
+                    Debug.LogWarning("Rain particle system not assigned!");
+                }
                 break;
 
             case 3:
                 // Day 3 events
+                if (rainParticles != null)
+                {
+                    rainParticles.Stop();
+                }
                 if (showDebugInfo)
                     Debug.Log("Day 3: Special event triggered!");
                 break;
@@ -153,11 +173,12 @@ public class DayNightCycle : MonoBehaviour
     void EndGame()
     {
         gameEnded = true;
+        if (rainParticles != null)
+        {
+            rainParticles.Stop();
+        }
         if (showDebugInfo)
             Debug.Log("Game completed! All 4 days have passed.");
-
-
-
     }
 
     void SwitchSkybox()
