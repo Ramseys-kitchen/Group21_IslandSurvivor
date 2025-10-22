@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class DayEvent : UnityEvent<int> { }
@@ -159,7 +160,7 @@ public class DayNightCycle : MonoBehaviour
                 break;
 
             case 4:
-                // Day 4 events 
+                // Day 4 events
                 if (showDebugInfo)
                     Debug.Log("Day 4: Final day events!");
                 break;
@@ -178,7 +179,9 @@ public class DayNightCycle : MonoBehaviour
             rainParticles.Stop();
         }
         if (showDebugInfo)
-            Debug.Log("Game completed! All 4 days have passed.");
+            Debug.Log("Game completed! Loading end game scene...");
+
+        SceneManager.LoadScene("EndScreen");
     }
 
     void SwitchSkybox()
