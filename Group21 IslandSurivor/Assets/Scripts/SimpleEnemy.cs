@@ -419,7 +419,7 @@ public class SimpleEnemy : MonoBehaviour
         if (isAttacking)
         {
             Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, 2f);
+            Gizmos.DrawWireSphere(transform.position, 7f);
         }
     }
 
